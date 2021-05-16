@@ -1,0 +1,37 @@
+stages:
+  - build
+  - test
+
+cache:
+  key: 'default'
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  tags:
+    - NODE
+  image: node:14-alpine
+  before_script:
+    - yarn install
+  script:
+    - yarn build
+  artifacts:
+    paths:
+      - build
+  only:
+    - merge_requests
+    - master
+
+test:
+  stage: test
+  tags:
+    - NODE
+  image: node:14-alpine
+  variables:
+    CI: 'true'
+  script:
+    - yarn test --coverage
+  only:
+    - merge_requests
+    - master
